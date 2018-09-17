@@ -1,5 +1,3 @@
 # Description
 
-Insert a useful description for the MerakiPS project here.
-
-Remember, it's the first thing a visitor will see.
+Module to interact with the Meraki API. Currently still being worked on :)

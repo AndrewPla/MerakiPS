@@ -2,7 +2,7 @@ TOPIC
 	about_MerakiPS
 	
 SHORT DESCRIPTION
-	Explains how to use the MerakiPS powershell module
+	To begin working with MerakiPS run Connect-Meraki -ApiKey (Read-Host -AsSecureString)
 	
 LONG DESCRIPTION
 	<Insert Content here>
