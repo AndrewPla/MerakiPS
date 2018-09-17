@@ -3,7 +3,7 @@
 	ModuleToProcess = 'MerakiPS.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '1.0.0.0'
+	ModuleVersion = '0.0.1'
 	
 	# ID used to uniquely identify this module
 	GUID = '2c0f6573-49ad-49d0-84c0-fe3ae701081a'
@@ -26,7 +26,7 @@
 	# Modules that must be imported into the global environment prior to importing
 	# this module
 	RequiredModules = @(
-		@{ ModuleName='PSFramework'; ModuleVersion='System.Object[]' }
+		@{ ModuleName='PSFramework'; ModuleVersion='0.10.27.128' }
 	)
 	
 	# Assemblies that must be loaded prior to importing this module
@@ -39,7 +39,13 @@
 	# FormatsToProcess = @('xml\MerakiPS.Format.ps1xml')
 	
 	# Functions to export from this module
-	FunctionsToExport = ''
+	FunctionsToExport = @(
+		'Connect-Meraki'
+		'Get-MerakiClient'
+		'Get-MerakiDevice'
+		'Get-MerakiNetwork'
+		'Get-MerakiOrganization'
+		)
 	
 	# Cmdlets to export from this module
 	CmdletsToExport = ''

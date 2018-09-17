@@ -1,5 +1,5 @@
 function Get-MerakiClient {
-<#
+    <#
 .SYNOPSIS
     Gets the clients of a device
 .DESCRIPTION
@@ -17,11 +17,10 @@ function Get-MerakiClient {
     PSCustomObject
 #>
     [CmdletBinding()]
-    [OutputType([PSCustomObject])]
     param
     (
-        [parameter(Mandatory = $true, Position = 0, ValueFromPipeline)]
-        [string]
+        [parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
+        [string[]]
         $Serial,
 
         [securestring]$ApiKey,
@@ -29,16 +28,41 @@ function Get-MerakiClient {
         [int]$Timespan = 86400
     )
     begin {
-        Write-PSFMessage "[$($MyInvocation.MyCommand.Name)] Function started" -Level Debug
-        $apiUrl = "https://dashboard.meraki.com/api/v0"
+        Write-PSFMessage "Function started" -Level Debug
+        
+        if(-not $ApiKey){
+            try {
+                $ApiKey = Get-PSFConfig MerakiPS.ApiKey -ErrorAction Stop | Select-Object -ExpandProperty Value
+            }
+            catch {throw 'Unable to detect an api key. Try running Connect-Meraki and try again.'}
+        }
+
+        $apiUrl = "https://api.meraki.com/api/v0"
+        $convertedKey = (New-Object PSCredential "user", $ApiKey).GetNetworkCredential().Password
         $headers = @{
-            "X-Cisco-Meraki-API-Key" = "$ApiKey"
+            "X-Cisco-Meraki-API-Key" = "$convertedKey"
+            "Content-Type"           = 'application/json'
         }
     }
     process {
-        Write-PSFMessage "[$($MyInvocation.MyCommand.Name)] PSBoundParameters: $($PSBoundParameters | Out-String)" -level Debug
-        $uri = $apiUrl + "/devices/$($Serial)/clients?timespan=$($Timespan)"
-        Invoke-RestMethod -uri $uri -Method Get -Headers $headers -Verbose		
+        foreach ($ser in $Serial) {
+            Write-PSFMessage "[$($MyInvocation.MyCommand.Name)] PSBoundParameters: $($PSBoundParameters | Out-String)" -level Debug
+            $uri = $apiUrl + "/devices/$($Serial)/clients?timespan=$($Timespan)"
+            $response = Invoke-RestMethod -uri $uri -Method Get -Headers $headers
+            foreach ($res in $response){
+                [PSCustomObject]@{
+                    Usage = $res.usage
+                    ID = $res.id
+                    Description = $res.description
+                    mDNSName = $res.mdnsname
+                    DHCPHostName = $res.dhcphostname
+                    MAC = $res.mac
+                    IP = $res.IP
+                    VLAN = $res.vlan
+                    SwitchPort = $res.switchport
+                }
+            }
+        }	
     }
     end {
         Write-PSFMessage "Function complete" -Level Debug

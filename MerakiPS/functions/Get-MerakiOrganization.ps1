@@ -1,47 +1,36 @@
-
 function Get-MerakiOrganization {
     <#
 	.SYNOPSIS
-		Gets the Organizations available to the provided ApiKey
-		.DESCRIPTION
-		Gets the Organizations available to the provided ApiKey
+		Gets the available organizations
+	.DESCRIPTION
+		Gets the available organizations for your ApiKey.
 	
-	.PARAMETER ApiKeY
-	A description of the ApiKey parameter
-	
+	.PARAMETER ApiKey
+	    Your Meraki Api Key. For access to the API, first enable the API for your organization under Organization > Settings > Dashboard API access.
 	.EXAMPLE
-		PS C:\> <example usage>
-		Explanation of what the example does
-	
-	.OUTPUTS
-		Output (if any)
-	
-	.NOTES
-		Created on:   	7/18/2018 2:23 PM
-		Edited on:      7/18/2018
-		Created by:   	AndrewPla
-		Organization:
-		Filename:     	Get-MerakiOrganization.ps1
-	
-	.INPUTS
-		Inputs (if any)
+		PS C:\> Get-MerakiOrganization -ApiKey $ApiKey
+		Gets all organizations
+
 #>
 	
-    [CmdletBinding(ConfirmImpact = 'Medium',
-        SupportsShouldProcess = $true)]
+    [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param
     (
-		
         [securestring]
-        $ApiKey,
-		
-        [string]
-        $OrganizationId
+        $ApiKey
     )
 	
     begin {
         Write-PSFMessage "Function Started" -level Debug
+
+        if (-not $ApiKey) {
+            try {
+                $ApiKey = Get-PSFConfig MerakiPS.ApiKey -ErrorAction Stop | Select-Object -ExpandProperty Value
+            }
+            catch {throw 'Unable to detect an api key. Try running Connect-Meraki and try again.'}
+        }
+
         $apiUrl = "https://api.meraki.com/api/v0"
         $convertedKey = (New-Object PSCredential "user", $ApiKey).GetNetworkCredential().Password
         $headers = @{
@@ -53,28 +42,16 @@ function Get-MerakiOrganization {
     process {
         Write-PSFMessage "[$($MyInvocation.MyCommand.Name)] ParameterSetName: $($PsCmdlet.ParameterSetName)" -level Debug
         Write-PSFMessage "[$($MyInvocation.MyCommand.Name)] PSBoundParameters: $($PSBoundParameters | Out-String)" -level Debug
-		
-        if ($OrganizationId) {
-            $uri = $APIUrl + "/organizations/$($organizationId)"
-            $Request = Invoke-RestMethod -uri $uri -Method Get -Headers $headers -Verbose
-            [pscustomobject]@{
-                "ID"   = $Request.ID
-                "Name" = $Request.Name
-            }
-        }
-        else {
-            $uri = $apiUrl + "/organizations"
-            $Request = Invoke-RestMethod -uri $uri -Method Get -Headers $headers -Verbose
-			
-            foreach ($item in $Request) {
-                [PSCustomObject]@{
-                    "ID"   = $item.ID
-                    "Name" = $item.Name
-                }
+        $uri = $APIUrl + '/organizations'
+        $response = Invoke-RestMethod -uri $uri -Method Get -Headers $headers
+        foreach ($res in $response) {
+            [PSCustomObject]@{
+                ID   = $res.id
+                Name = $res.name
             }
         }
     }
-
+        
     end {
         Write-PSFMessage "Function Complete" -level debug
     }
