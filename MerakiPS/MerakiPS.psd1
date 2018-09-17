@@ -9,13 +9,13 @@
 	GUID = '2c0f6573-49ad-49d0-84c0-fe3ae701081a'
 	
 	# Author of this module
-	Author = 'APla'
+	Author = 'Andrew Pla'
 	
 	# Company or vendor of this module
-	CompanyName = 'MyCompany'
+	CompanyName = 'AndrewPla'
 	
 	# Copyright statement for this module
-	Copyright = 'Copyright (c) 2018 APla'
+	Copyright = 'Copyright (c) 2018 Andrew Pla'
 	
 	# Description of the functionality provided by this module
 	Description = 'Module to interact with the Cisco Meraki API.'
