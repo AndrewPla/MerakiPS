@@ -1,4 +1,4 @@
-function Get-MerakiNetwork {
+﻿function Get-MerakiNetwork {
     <#
 	.SYNOPSIS
 		Returns Meraki networks

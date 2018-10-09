@@ -37,7 +37,7 @@ Param (
 $ModuleName = "MerakiPS"
 
 # Base path to the github repository
-$BaseUrl = "https://github.com/<InsertUsernameHere>/MerakiPS"
+$BaseUrl = "https://github.com/AndrewPla/MerakiPS"
 
 # If the module is in a subfolder of the cloned repository, specify relative path here. Empty string to skip.
 $SubFolder = "MerakiPS"

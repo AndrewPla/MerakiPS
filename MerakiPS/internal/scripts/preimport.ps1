@@ -1,4 +1,4 @@
 # Add all things you want to run before importing the main code
-
-# Set TLS to 1.2 for the current session
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+foreach ($file in (Get-ChildItem "$ModuleRoot\internal\scripts\tlssetup.ps1" -ErrorAction Ignore)) {
+    . Import-ModuleFile -Path $file.FullName
+}

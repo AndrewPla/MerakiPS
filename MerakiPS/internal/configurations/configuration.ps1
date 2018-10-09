@@ -11,7 +11,6 @@ feel totally free to split them into multiple files.
 Set-PSFConfig -Module 'MerakiPS' -Name 'Example.Setting' -Value 10 -Initialize -Validation 'integer' -Handler { } -Description "Example configuration setting. Your module can then use the setting using 'Get-PSFConfigValue'"
 #>
 $params = @{
-	
     Module      = 'MerakiPS';
     Name        = 'ApiKey';
     Value       = $null;
