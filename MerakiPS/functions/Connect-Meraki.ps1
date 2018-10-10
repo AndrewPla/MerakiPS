@@ -22,5 +22,5 @@ function Connect-Meraki {
         $Register
     )
     Set-PSFConfig -FullName MerakiPS.ApiKey -Value $ApiKey
-    if ($Register) {Register-PSFConfig MerakiPS.ApiKey}
+    if ($Register){ Get-PSFConfig MerakiPS.ApiKey | Register-PSFConfig }
 }
