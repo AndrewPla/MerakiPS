@@ -2,26 +2,26 @@ function Get-MerakiDevice {
     <#
 	.SYNOPSIS
 		Short description
-	
+
 	.DESCRIPTION
 		Get-MerakiDevices Function
-	
+
 	.PARAMETER Network
 		A description of the Network parameter.
-	
+
 	.PARAMETER ApiKey
         Your Meraki Api Key. For access to the API, first enable the API for your organization under Organization > Settings > Dashboard API access.
 
-	
+
 	.PARAMETER serial
 		A description of the serial parameter.
-	
+
 	.EXAMPLE
 		PS C:\> <example usage>
 		Explanation of what the example does
 
 #>
-	
+
     [CmdletBinding()]
     param
     (
@@ -30,11 +30,15 @@ function Get-MerakiDevice {
         [alias('id')]
         [string[]]
         $Network,
-		
+
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
+        [string]
+        $Name,
+
         [securestring]
         $ApiKey
     )
-	
+
     begin {
         Write-PSFMessage " Function started" -level debug
 
@@ -69,6 +73,7 @@ function Get-MerakiDevice {
                     Name      = $res.Name
                     Model     = $res.Model
                     NetworkID = $res.networkID
+                    NetworkName = $Name
                 }
             }
         }
