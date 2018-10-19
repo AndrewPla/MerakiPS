@@ -29,7 +29,8 @@ $ApiKey,
         Write-PSfMessage "PSBoundParameters: $($PSBoundParameters | Out-String)" -level internalcomment
 
         $uri = Get-MerakiUrl "<%=$PLASTER_PARAM_ApiEndpoint%>"
-        Invoke-RestMethod -Uri $uri -headers $headers -Method GET
+        $res = Invoke-RestMethod -Uri $uri -headers $headers -Method GET
+        $res
     }
     end {
         Write-PSFMessage "Function Complete" -level verbose
