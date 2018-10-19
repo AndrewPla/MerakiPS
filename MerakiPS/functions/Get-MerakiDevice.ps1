@@ -13,8 +13,8 @@ function Get-MerakiDevice {
         Your Meraki Api Key. For access to the API, first enable the API for your organization under Organization > Settings > Dashboard API access.
 
 
-	.PARAMETER serial
-		A description of the serial parameter.
+	.PARAMETER NetworkName
+		Name of the network. This isn't added by the APi, we are enriching the objects so they are more usable.
 
 	.EXAMPLE
 		PS C:\> Get-MerakiOrganization | Get-MerakiNetwork |Get-MerakiDevice
@@ -32,8 +32,9 @@ function Get-MerakiDevice {
         $Network,
 
         [Parameter(ValueFromPipelineByPropertyName = $true)]
+        [Alias('Name')]
         [string]
-        $Name,
+        $NetworkName,
 
         [securestring]
         $ApiKey
@@ -51,7 +52,9 @@ function Get-MerakiDevice {
             $uri = Get-MerakiUrl "/networks/$($network)/devices"
             $response = Invoke-RestMethod -uri $uri -Method Get -Headers $headers
             foreach ($res in $response) {
-                [PSCustomObject]@{
+                $res | Add-Member -MemberType NoteProperty -Name NetworkName $NetworkName
+                $res
+                <#[PSCustomObject]@{
                     LanIP       = $res.LanIP
                     Serial      = $res.serial
                     MAC         = $res.MAC
@@ -62,7 +65,7 @@ function Get-MerakiDevice {
                     Model       = $res.Model
                     NetworkID   = $res.networkID
                     NetworkName = $Name
-                }
+                }#>
             }
         }
     }
