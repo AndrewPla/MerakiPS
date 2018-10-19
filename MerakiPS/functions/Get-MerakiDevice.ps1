@@ -17,8 +17,8 @@ function Get-MerakiDevice {
 		A description of the serial parameter.
 
 	.EXAMPLE
-		PS C:\> <example usage>
-		Explanation of what the example does
+		PS C:\> Get-MerakiOrganization | Get-MerakiNetwork |Get-MerakiDevice
+		Gets all devices for all networks in your org
 
 #>
 
@@ -41,38 +41,26 @@ function Get-MerakiDevice {
 
     begin {
         Write-PSFMessage " Function started" -level debug
-
-        if (-not $ApiKey) {
-            try {
-                $ApiKey = Get-PSFConfig MerakiPS.ApiKey -ErrorAction Stop | Select-Object -ExpandProperty Value
-            }
-            catch {throw 'Unable to detect an api key. Try running Connect-Meraki and try again.'}
-        }
-
-        $apiUrl = "https://api.meraki.com/api/v0"
-        $convertedKey = (New-Object PSCredential "user", $ApiKey).GetNetworkCredential().Password
-        $headers = @{
-            "X-Cisco-Meraki-API-Key" = "$convertedKey"
-            "Content-Type"           = 'application/json'
-        }
+        if (-not $ApiKey) { $ApiKey = Get-MerakiApiKey }
+        $headers = Get-MerakiHeader $ApiKey
     }
     process {
-        Write-PSFMessage "[$($MyInvocation.MyCommand.Name)] ParameterSetName: $($PsCmdlet.ParameterSetName)" -level Debug
-        Write-PSFMessage "[$($MyInvocation.MyCommand.Name)] PSBoundParameters: $($PSBoundParameters | Out-String)" -level Debug
+        Write-PSFMessage "ParameterSetName: $($PsCmdlet.ParameterSetName)" -level InternalComment
+        Write-PSFMessage "PSBoundParameters: $($PSBoundParameters | Out-String)" -level InternalComment
         foreach ($net in $network) {
-            $uri = $apiUrl + "/networks/$($Network)/devices"
+            $uri = Get-MerakiUrl "/networks/$($network)/devices"
             $response = Invoke-RestMethod -uri $uri -Method Get -Headers $headers
             foreach ($res in $response) {
                 [PSCustomObject]@{
-                    LanIP     = $res.LanIP
-                    Serial    = $res.serial
-                    MAC       = $res.MAC
-                    Latitude  = $res.Latitude
-                    Longitude = $res.Longitude
-                    Address   = $res.Address
-                    Name      = $res.Name
-                    Model     = $res.Model
-                    NetworkID = $res.networkID
+                    LanIP       = $res.LanIP
+                    Serial      = $res.serial
+                    MAC         = $res.MAC
+                    Latitude    = $res.Latitude
+                    Longitude   = $res.Longitude
+                    Address     = $res.Address
+                    Name        = $res.Name
+                    Model       = $res.Model
+                    NetworkID   = $res.networkID
                     NetworkName = $Name
                 }
             }

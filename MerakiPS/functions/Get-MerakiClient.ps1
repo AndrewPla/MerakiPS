@@ -25,44 +25,37 @@ function Get-MerakiClient {
 
         [securestring]$ApiKey,
 
-        [int]$Timespan = 86400
+        [int]$Timespan = 86400,
+
+        [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
+        $NetworkId
     )
     begin {
-        Write-PSFMessage "Function started" -Level Debug
-        
-        if(-not $ApiKey){
-            try {
-                $ApiKey = Get-PSFConfig MerakiPS.ApiKey -ErrorAction Stop | Select-Object -ExpandProperty Value
-            }
-            catch {throw 'Unable to detect an api key. Try running Connect-Meraki and try again.'}
-        }
-
-        $apiUrl = "https://api.meraki.com/api/v0"
-        $convertedKey = (New-Object PSCredential "user", $ApiKey).GetNetworkCredential().Password
-        $headers = @{
-            "X-Cisco-Meraki-API-Key" = "$convertedKey"
-            "Content-Type"           = 'application/json'
-        }
+        Write-PSFMessage " Function started" -level debug
+        if (-not $ApiKey) { $ApiKey = Get-MerakiApiKey }
+        $headers = Get-MerakiHeader $ApiKey
     }
+
     process {
         foreach ($ser in $Serial) {
             Write-PSFMessage "[$($MyInvocation.MyCommand.Name)] PSBoundParameters: $($PSBoundParameters | Out-String)" -level Debug
-            $uri = $apiUrl + "/devices/$($Serial)/clients?timespan=$($Timespan)"
+            $uri = Get-MerakiUrl "/devices/$($Serial)/clients?timespan=$($Timespan)"
             $response = Invoke-RestMethod -uri $uri -Method Get -Headers $headers
-            foreach ($res in $response){
+            foreach ($res in $response) {
                 [PSCustomObject]@{
-                    Usage = $res.usage
-                    ID = $res.id
-                    Description = $res.description
-                    mDNSName = $res.mdnsname
+                    Usage        = $res.usage
+                    ID           = $res.id
+                    Description  = $res.description
+                    mDNSName     = $res.mdnsname
                     DHCPHostName = $res.dhcphostname
-                    MAC = $res.mac
-                    IP = $res.IP
-                    VLAN = $res.vlan
-                    SwitchPort = $res.switchport
+                    MAC          = $res.mac
+                    IP           = $res.IP
+                    VLAN         = $res.vlan
+                    SwitchPort   = $res.switchport
+                    NetworkId    = $networkId
                 }
             }
-        }	
+        }
     }
     end {
         Write-PSFMessage "Function complete" -Level Debug
