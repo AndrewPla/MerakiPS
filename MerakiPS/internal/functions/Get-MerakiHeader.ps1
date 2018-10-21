@@ -3,11 +3,13 @@ function Get-MerakiHeader {
     param(
         [Parameter(Mandatory)]
         [securestring]
-        $ApiKey
+        $ApiKey,
+
+        $ContentType = 'application/json'
     )
     $convertedKey = (New-Object PSCredential "user", $ApiKey).GetNetworkCredential().Password
     @{
         "X-Cisco-Meraki-API-Key" = "$convertedKey"
-        "Content-Type" = 'application/json'
+        "Content-Type" = "$ContentType"
     }
 }

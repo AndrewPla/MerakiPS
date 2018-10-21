@@ -1,4 +1,4 @@
-function Get-MerakiOrganization {
+function Get-MerakiOrg {
     <#
 	.SYNOPSIS
 		Gets the available organizations
@@ -7,7 +7,7 @@ function Get-MerakiOrganization {
 	.PARAMETER ApiKey
 	    Secure string containing your Meraki Api Key. For access to the API, first enable the API for your organization under Organization > Settings > Dashboard API access.
 	.EXAMPLE
-		PS C:\> Get-MerakiOrganization -ApiKey $ApiKey
+		PS C:\> Get-MerakiOrg -ApiKey $ApiKey
 		Gets all organizations
 
 #>
@@ -16,20 +16,17 @@ function Get-MerakiOrganization {
     [OutputType([PSCustomObject])]
     param
     (
-        [securestring]
-        $ApiKey
     )
 
     begin {
         Write-PSFMessage " Function started" -level debug
-        if (-not $ApiKey) { $ApiKey = Get-MerakiApiKey }
-        $headers = Get-MerakiHeader $ApiKey
+
     }
     process {
         Write-PSFMessage "ParameterSetName: $($PsCmdlet.ParameterSetName)" -level InternalComment
         Write-PSFMessage "PSBoundParameters: $($PSBoundParameters | Out-String)" -level InternalComment
-        $uri = Get-MerakiUrl '/organizations'
-        $res = Invoke-RestMethod -uri $uri -Method Get -Headers $headers
+        $uri = "$(Get-MerakiUrl)/organizations"
+        $res = Invoke-MerakiMethod -uri $uri
         $res
     }
     end {
