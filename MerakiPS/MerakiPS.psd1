@@ -39,7 +39,7 @@
     # FormatsToProcess = @('xml\MerakiPS.Format.ps1xml')
 
     # Functions to export from this module
-    FunctionsToExport = @('Connect-Meraki','Invoke-MerakiMethod','Get-MerakiClient','Get-MerakiDevice','Get-MerakiNetwork','Get-MerakiOrg')
+    FunctionsToExport = @('Connect-Meraki','Invoke-MerakiMethod','Get-MerakiDashboardAdmin','Get-MerakiNetworkBluetoothClient','Get-MerakiClient','Get-MerakiClientDetail','Get-MerakiClientEvent','Get-MerakiClientGroupPolicy','Get-MerakiClientLatencyHistory','Get-MerakiClientSecurityEvent','Get-MerakiClientSplashAuthorization','Get-MerakiClientTrafficHistory','Get-MerakiClientUsageHistory','Get-MerakiConfigTemplate','Get-MerakiDevice','Get-MerakiDeviceLldpCdp','Get-MerakiDevicePerformance','Get-MerakiDeviceUplinkStatus','Get-MerakiGroupPolicy','Get-MerakiSplashRADIUSUser','Get-MerakiNetworkSSIDL3FirewallRule','Get-MerakiNetworkCellularFirewallRule','Get-MerakiNetworkL3FirewallRule','Get-MerakiOrgVpnFirewallRule','Get-MerakiNetwork','Get-MerakiNetworkAccessPolicy','Get-MerakiNetworkAirMarshScan','Get-MerakiNetworkBluetoothSettings','Get-MerakiNetworkSitetoSiteVpn','Get-MerakiNetworkTraffic','Get-MerakiOrg','Get-MerakiNetworkSSID','Get-MerakiNetworkStaticRoute','Get-MerakiDeviceSwitchPort','Get-MerakiNetworkSyslogServer','Get-MerakiNetworkVlan')
 
     # Cmdlets to export from this module
     CmdletsToExport = ''
@@ -81,6 +81,68 @@
 
     } # End of PrivateData hashtable
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

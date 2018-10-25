@@ -15,14 +15,18 @@ Id of the network. This will enrich our output with the NetworkId property. This
     Gets all meraki clients from the device with $serial. It will return all devices from the past month.
 
 #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'List')]
     param
     (
-        [parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName)]
+        [parameter(Mandatory,
+            Position = 0,
+            ValueFromPipelineByPropertyName = $true,
+            ParameterSetName = 'List'
+        )]
         [string]
         $Serial,
 
-        [Parameter(Position = 1)]
+        [Parameter( ParameterSetName = 'List')]
         [int]$Timespan = 86400,
 
         [Parameter(ValueFromPipelineByPropertyName)]
@@ -31,18 +35,21 @@ Id of the network. This will enrich our output with the NetworkId property. This
     begin {
         Write-PSFMessage " Function started" -level debug
     }
-
     process {
-        foreach ($ser in $Serial) {
-            Write-PSFMessage "PSBoundParameters: $($PSBoundParameters | Out-String)" -level Debug
-            $uri = "$(Get-MerakiUrl)/devices/$($Serial)/clients?timespan=$($Timespan)"
-            $res = Invoke-MerakiMethod -uri $uri
-            $res | Add-Member -MemberType NoteProperty -Name NetworkId -Value $NetworkId
-            $res
+        Write-PSFMessage "PSBoundParameters: $($PSBoundParameters | Out-String)" -level Debug
+        Switch ($PSCmdlet.ParameterSetName) {
+            List {
+                $uri = "$(Get-MerakiUrl)/devices/$($Serial)/clients?timespan=$($Timespan)"
+                $res = Invoke-MerakiMethod -uri $uri
+                $res | Add-Member -MemberType NoteProperty -Name NetworkId -Value $NetworkId
+                $res
+            }
+
         }
+
     }
+
     end {
         Write-PSFMessage "Function complete" -Level Debug
     }
 }
-
