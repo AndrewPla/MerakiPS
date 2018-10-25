@@ -1,35 +1,26 @@
 function <%=$PLASTER_PARAM_FunctionName%> {
     <#
-.SYNOPSIS
-    <%=$PLASTER_PARAM_Synopsis%>
-.DESCRIPTION
-    <%=$PLASTER_PARAM_Description%>
-.PARAMETER ApiKey
-    Your Meraki Api Key. For access to the API, first enable the API for your organization under Organization > Settings > Dashboard API access.
-
-.EXAMPLE
-    PS C:\> <%=$PLASTER_PARAM_ExampleCode%>
-    <%=$PLASTER_PARAM_ExampleText%>
+    .SYNOPSIS
+        <%=$PLASTER_PARAM_Synopsis%>
+    .DESCRIPTION
+        <%=$PLASTER_PARAM_Description%>
+    .EXAMPLE
+        PS C:\> <%=$PLASTER_PARAM_ExampleCode%>
+        <%=$PLASTER_PARAM_ExampleText%>
 #>
-[CmdletBinding(HelpUri = 'https://andrewpla.github.io/MerakiPS/commands/<%=$PLASTER_PARAM_FunctionName%>')]
-
+[CmdletBinding()]
     param
     (
- [securestring]
-$ApiKey,
+
     )
     begin {
         Write-PsfMessage "Function started" -level verbose
-         if (-not $ApiKey) { $ApiKey = Get-MerakiApiKey }
-        $headers = Get-MerakiHeader $ApiKey
         }
-
     process {
         Write-PsfMessage "ParameterSetName: $($PsCmdlet.ParameterSetName)" -level internalcomment
         Write-PSfMessage "PSBoundParameters: $($PSBoundParameters | Out-String)" -level internalcomment
-
-        $uri = Get-MerakiUrl "<%=$PLASTER_PARAM_ApiEndpoint%>"
-        $res = Invoke-RestMethod -Uri $uri -headers $headers -Method GET
+        $uri = "$(Get-MerakiUrl)<%=$PLASTER_PARAM_ApiEndpoint%>"
+        $res = Invoke-MerakiMethod -Uri $uri
         $res
     }
     end {
